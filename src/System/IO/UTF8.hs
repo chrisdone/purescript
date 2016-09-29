@@ -1,25 +1,15 @@
-module System.IO.UTF8 where
+module System.IO.UTF8
 
-import Prelude.Compat
+where
 
-import System.IO ( IOMode(..)
-                 , hGetContents
-                 , hSetEncoding
-                 , hClose
-                 , hPutStr
-                 , openFile
-                 , utf8
-                 )
+import Prelude
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.UTF8 as UTF8
 
 readUTF8File :: FilePath -> IO String
 readUTF8File inFile = do
-  h <- openFile inFile ReadMode
-  hSetEncoding h utf8
-  hGetContents h
+  fmap UTF8.toString (BS.readFile inFile)
 
 writeUTF8File :: FilePath -> String -> IO ()
 writeUTF8File inFile text = do
-  h <- openFile inFile WriteMode
-  hSetEncoding h utf8
-  hPutStr h text
-  hClose h
+  BS.writeFile inFile (UTF8.fromString text)
